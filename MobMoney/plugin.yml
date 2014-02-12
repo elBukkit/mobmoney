@@ -1,6 +1,6 @@
 name: MobMoney
 main: org.avalon.mobmoney.MobMoney
-version: 1.2.3
+version: 1.2.4
 depend: [Vault]
 commands:
     mobmoney:
