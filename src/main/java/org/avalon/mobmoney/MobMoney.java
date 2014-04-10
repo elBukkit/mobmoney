@@ -51,7 +51,7 @@ public class MobMoney extends JavaPlugin {
 	
 	public void onEnable() {
 		if (!setupEconomy()) {
-			getLogger().warning(String.format("[%s] - Could not load Plugin duo no Vault dependency found.", new Object[] { getDescription().getName() }));
+			getLogger().warning(String.format("[%s] - Could not load Plugin, no Vault dependency found.", new Object[] { getDescription().getName() }));
 		getServer().getPluginManager().disablePlugin(this);
 		return;	
 	} else {
@@ -138,10 +138,6 @@ public class MobMoney extends JavaPlugin {
 				SubID = Integer.parseInt(r[1]);
 			}
 			i = new ItemStack(mat, 1, (short) SubID);
-		  
-		  
-		  
-		  
 	  }
 	  
 	   public boolean onCommand(CommandSender sender, Command cmd,
@@ -186,10 +182,7 @@ public class MobMoney extends JavaPlugin {
 					   } else { System.out.println("Wrong Command Usage. Use /mobmoney reload"); return false; }
 				   }else { System.out.println("Wrong Command Usage. Use /mobmoney reload"); return false; }
 				   
-				   
-				   
 			   }
 		   return true;
 	   }
-
 }
