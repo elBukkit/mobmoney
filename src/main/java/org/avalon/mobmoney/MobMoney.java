@@ -32,9 +32,7 @@ public class MobMoney extends JavaPlugin {
 	public ArrayList<String> worldblacklist = new ArrayList<String>();
 	List<String> blacklist;
 	
-	
 	public final MobKillListener MobKill = new MobKillListener(this);
-	
 	
 	public String pickup;
 	public Sound sound;
