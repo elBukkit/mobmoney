@@ -1,7 +1,9 @@
 package org.avalon.mobmoney;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -85,64 +87,58 @@ public class MobKillListener implements Listener {
 		if (result == 0.0) {
 			return null;
 		}
-		meta.setDisplayName("MobMoney" + RoundTo2Decimals(result));
+		meta.setDisplayName(plugin.econ.currencyNameSingular());
+		List<String> lore = new ArrayList<String>();
+		lore.add(RoundTo2Decimals(result));
+		meta.setLore(lore);
 		i.setItemMeta(meta);
 		return i;
 		}
 	}
 	
-	private double RoundTo2Decimals(double val) {
+	private String RoundTo2Decimals(double val) {
         DecimalFormat df2 = new DecimalFormat("###.##");
-    return Double.valueOf(df2.format(val));
+    return df2.format(val);
 }
+	
+	protected float getAmount(ItemStack itemStack) {
+		ItemMeta meta = itemStack.getItemMeta();
+		if (meta == null) return 0.0f;
+		List<String> lore = meta.getLore();
+		if (lore.size() == 0) return 0.0f;
+		float value = 0;
+		try {
+			value = Float.parseFloat(lore.get(0));
+		} catch(Throwable ex) {
+			return value;
+		}
+		
+		return value * itemStack.getAmount();
+	}
 	
 	@EventHandler
 	public void onMoneyPickup(PlayerPickupItemEvent e) {
 		if (e.getItem().getItemStack().hasItemMeta()) {
 			ItemStack i = e.getItem().getItemStack();
 			Player p = e.getPlayer();
-			if (i.getItemMeta().getDisplayName() != null) {
-			if (i.getItemMeta().getDisplayName().contains("MobMoney")) {
-				String reward = i.getItemMeta().getDisplayName();
-				reward = reward.replace("MobMoney", "");
-				float money = Float.valueOf(reward);
+			if (i.getItemMeta().getDisplayName() != null && i.getItemMeta().getDisplayName().equals(plugin.econ.currencyNameSingular())) {
+				float money = getAmount(i);
 				
-				
-				if (i.getAmount() == 1) {	
 				e.setCancelled(true);
 				e.getItem().remove();
-				if (Float.valueOf(reward) == 0.0) {
+				if (money == 0.0) {
 					e.setCancelled(true);
 					e.getItem().remove();
 					return;
 				}
 				if (add(p, money)) {
 				if (plugin.pickupmessage) {
-				String rewardMessage = plugin.pickup.replace("%money%", reward + " " + plugin.econ.currencyNameSingular());
+				String rewardMessage = plugin.pickup.replace("%money%", RoundTo2Decimals(money) + " " + plugin.econ.currencyNameSingular());
 				p.sendMessage(ChatColor.translateAlternateColorCodes('&', rewardMessage));
 				}
 				p.playSound(p.getLocation(), plugin.sound, plugin.volume, plugin.pitch);
 				}
-				return;
-				} else {
-					e.setCancelled(true);
-					e.getItem().remove();
-					if (Float.valueOf(reward) == 0.0) {
-						e.setCancelled(true);
-						e.getItem().remove();
-						return;
-					} 
-					if (add(p, money)) {
-					if (plugin.pickupmessage) {
-					String rewardMessage = plugin.pickup.replace("%money%", (i.getAmount()*Float.valueOf(reward) + " " + plugin.econ.currencyNamePlural()));
-					p.sendMessage(ChatColor.translateAlternateColorCodes('&', rewardMessage));
-					}
-					p.playSound(p.getLocation(), plugin.sound, plugin.volume, plugin.pitch);
-					return;
-					}
-				}
 			}
-		}
 		}
 	}
 	
@@ -176,7 +172,7 @@ public class MobKillListener implements Listener {
 	if(meta.hasDisplayName()){
 	String displayName = meta.getDisplayName();
 	 
-	if (displayName.contains("MobMoney")) {
+	if (displayName.equals(plugin.econ.currencyNameSingular())) {
 		e.setCancelled(true);
 		player.sendMessage(ChatColor.RED + "You cannot rename this item.");
 	}
