@@ -113,7 +113,7 @@ public class MobKillListener implements Listener {
 	}
 
 	private String RoundTo2Decimals(double val) {
-		DecimalFormat df2 = new DecimalFormat("###.##");
+		DecimalFormat df2 = new DecimalFormat("##0.00");
 		return df2.format(val);
 	}
 
