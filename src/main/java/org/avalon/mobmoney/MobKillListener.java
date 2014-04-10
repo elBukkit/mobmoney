@@ -136,6 +136,8 @@ public class MobKillListener implements Listener {
 
 	@EventHandler
 	public void onMoneyPickup(PlayerPickupItemEvent e) {
+		if (e.isCancelled()) return;
+		
 		if (e.getItem().getItemStack().hasItemMeta()) {
 			ItemStack i = e.getItem().getItemStack();
 			Player p = e.getPlayer();
@@ -145,8 +147,6 @@ public class MobKillListener implements Listener {
 				e.setCancelled(true);
 				e.getItem().remove();
 				if (money == 0.0) {
-					e.setCancelled(true);
-					e.getItem().remove();
 					return;
 				}
 				if (add(p, money)) {
